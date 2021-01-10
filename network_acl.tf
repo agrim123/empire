@@ -31,7 +31,7 @@ resource "aws_default_network_acl" "production-network-acl-main" {
   }
 }
 
-resource "aws_network_acl" "production-network-acl-1a" {
+resource "aws_network_acl" "production-network-acl-internal-internal-1a" {
   vpc_id = aws_vpc.production.id
 
   ingress {
@@ -57,12 +57,12 @@ resource "aws_network_acl" "production-network-acl-1a" {
   ]
 
   tags = {
-    "Name"        = "production-network-acl-1a"
+    "Name"        = "production-network-acl-internal-1a"
     "Environment" = "production"
   }
 }
 
-resource "aws_network_acl" "production-network-acl-1b" {
+resource "aws_network_acl" "production-network-acl-internal-1b" {
   vpc_id = aws_vpc.production.id
 
   ingress {
@@ -88,12 +88,12 @@ resource "aws_network_acl" "production-network-acl-1b" {
   ]
 
   tags = {
-    "Name"        = "production-network-acl-1b"
+    "Name"        = "production-network-acl-internal-1b"
     "Environment" = "production"
   }
 }
 
-resource "aws_network_acl" "production-network-acl-1c" {
+resource "aws_network_acl" "production-network-acl-internal-1c" {
   vpc_id = aws_vpc.production.id
 
   ingress {
@@ -119,7 +119,7 @@ resource "aws_network_acl" "production-network-acl-1c" {
   ]
 
   tags = {
-    "Name"        = "production-network-acl-1c"
+    "Name"        = "production-network-acl-internal-1c"
     "Environment" = "production"
   }
 }
