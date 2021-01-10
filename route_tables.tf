@@ -5,6 +5,7 @@ resource "aws_route_table" "production-rt-main" {
     cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.production-igw.id
   }
+
   tags = {
     "Name"        = "production-rt-main"
     "Environment" = "production"
@@ -74,4 +75,22 @@ resource "aws_route_table_association" "production-internal-1c-subnet-rt-associa
   subnet_id      = aws_subnet.production-internal-1c.id
   route_table_id = aws_route_table.production-rt-1c.id
   depends_on     = [aws_subnet.production-internal-1c, aws_route_table.production-rt-1c]
+}
+
+resource "aws_route_table_association" "production-external-1a-subnet-rt-association" {
+  subnet_id      = aws_subnet.production-external-1a.id
+  route_table_id = aws_route_table.production-rt-main.id
+  depends_on     = [aws_subnet.production-external-1a, aws_route_table.production-rt-main]
+}
+
+resource "aws_route_table_association" "production-external-1b-subnet-rt-association" {
+  subnet_id      = aws_subnet.production-external-1b.id
+  route_table_id = aws_route_table.production-rt-main.id
+  depends_on     = [aws_subnet.production-external-1b, aws_route_table.production-rt-main]
+}
+
+resource "aws_route_table_association" "production-external-1c-subnet-rt-association" {
+  subnet_id      = aws_subnet.production-external-1c.id
+  route_table_id = aws_route_table.production-rt-main.id
+  depends_on     = [aws_subnet.production-external-1c, aws_route_table.production-rt-main]
 }
