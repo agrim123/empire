@@ -1,5 +1,5 @@
-resource "aws_default_route_table" "production-rt-main" {
-  default_route_table_id = aws_vpc.production.default_route_table_id
+resource "aws_route_table" "production-rt-main" {
+  vpc_id = aws_vpc.production.id
 
   route {
     cidr_block = "0.0.0.0/0"
@@ -13,7 +13,7 @@ resource "aws_default_route_table" "production-rt-main" {
 
 resource "aws_main_route_table_association" "production-rt-main-association" {
   vpc_id         = aws_vpc.production.id
-  route_table_id = aws_default_route_table.production-rt-main.id
+  route_table_id = aws_route_table.production-rt-main.id
 }
 
 resource "aws_route_table" "production-rt-1a" {
