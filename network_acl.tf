@@ -19,14 +19,14 @@ resource "aws_default_network_acl" "production-network-acl-main" {
     to_port    = 0
   }
 
-  subnet_ids = [ 
-        aws_subnet.production-external-1a.id,
-        aws_subnet.production-external-1b.id,
-        aws_subnet.production-external-1c.id,
-        aws_subnet.production-internal-1a.id,
-        aws_subnet.production-internal-1b.id,
-        aws_subnet.production-internal-1c.id,
-    ]
+  subnet_ids = [
+    aws_subnet.production-external-1a.id,
+    aws_subnet.production-external-1b.id,
+    aws_subnet.production-external-1c.id,
+    aws_subnet.production-internal-1a.id,
+    aws_subnet.production-internal-1b.id,
+    aws_subnet.production-internal-1c.id,
+  ]
 
   tags = {
     "Name"        = "production-network-acl-main"
