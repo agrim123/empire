@@ -1,6 +1,6 @@
 ## empire
 
-This repo contains 
+This repo contains my learning of terraform.
 
 
 ### References
