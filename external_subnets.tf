@@ -1,44 +1,16 @@
-resource "aws_subnet" "production-external-1a" {
-  vpc_id = aws_vpc.production.id
+resource "aws_subnet" "external_subnets" {
+  for_each = { for index, item in var.external_subnets : index => item }
 
-  cidr_block              = "10.0.1.0/24"
-  availability_zone       = "ap-southeast-1a"
+  vpc_id = aws_vpc.vpc.id
+
+  cidr_block              = var.external_subnets[each.key]["cidr_block"]
+  availability_zone       = var.external_subnets[each.key]["availability_zone"]
   map_public_ip_on_launch = true
 
-  depends_on = [aws_internet_gateway.production-igw]
+  depends_on = [aws_internet_gateway.igw]
 
   tags = {
-    "Name"        = "production-external-1a"
-    "Environment" = "production"
-  }
-}
-
-resource "aws_subnet" "production-external-1b" {
-  vpc_id = aws_vpc.production.id
-
-  cidr_block              = "10.0.2.0/24"
-  availability_zone       = "ap-southeast-1b"
-  map_public_ip_on_launch = true
-
-  depends_on = [aws_internet_gateway.production-igw]
-
-  tags = {
-    "Name"        = "production-external-1b"
-    "Environment" = "production"
-  }
-}
-
-resource "aws_subnet" "production-external-1c" {
-  vpc_id = aws_vpc.production.id
-
-  cidr_block              = "10.0.3.0/24"
-  availability_zone       = "ap-southeast-1c"
-  map_public_ip_on_launch = true
-
-  depends_on = [aws_internet_gateway.production-igw]
-
-  tags = {
-    "Name"        = "production-external-1c"
-    "Environment" = "production"
+    "Name"        = var.external_subnets[each.key]["name"]
+    "Environment" = var.env
   }
 }

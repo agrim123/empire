@@ -1,29 +1,11 @@
-resource "aws_nat_gateway" "production-nat-1a" {
-  subnet_id     = aws_subnet.production-external-1a.id
-  allocation_id = aws_eip.production-nat-eip-1a.id
+resource "aws_nat_gateway" "nat" {
+  for_each = { for index, item in aws_eip.eip : index => item }
+
+  subnet_id     = aws_subnet.external_subnets[each.key].id
+  allocation_id = aws_eip.eip[each.key].id
 
   tags = {
-    "Name"        = "production-nat-1a"
-    "Environment" = "production"
-  }
-}
-
-resource "aws_nat_gateway" "production-nat-1b" {
-  subnet_id     = aws_subnet.production-external-1b.id
-  allocation_id = aws_eip.production-nat-eip-1b.id
-
-  tags = {
-    "Name"        = "production-nat-1b"
-    "Environment" = "production"
-  }
-}
-
-resource "aws_nat_gateway" "production-nat-1c" {
-  subnet_id     = aws_subnet.production-external-1c.id
-  allocation_id = aws_eip.production-nat-eip-1c.id
-
-  tags = {
-    "Name"        = "production-nat-1c"
-    "Environment" = "production"
+    "Name"        = "${var.env}-nat-${var.external_subnets[each.key]["availability_zone"]}"
+    "Environment" = var.env
   }
 }

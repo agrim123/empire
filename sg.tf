@@ -2,7 +2,7 @@ resource "aws_security_group" "world-ssh" {
   name        = "world-ssh"
   description = "Allow all ssh inbound traffic"
 
-  vpc_id                 = aws_vpc.production.id
+  vpc_id                 = aws_vpc.vpc.id
   revoke_rules_on_delete = true
 
   ingress {

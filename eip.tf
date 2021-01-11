@@ -1,14 +1,10 @@
-resource "aws_eip" "production-nat-eip-1a" {
-  vpc        = true
-  depends_on = [aws_internet_gateway.production-igw]
-}
+resource "aws_eip" "eip" {
+  for_each = { for index, item in var.external_subnets : index => item }
 
-resource "aws_eip" "production-nat-eip-1b" {
   vpc        = true
-  depends_on = [aws_internet_gateway.production-igw]
-}
-
-resource "aws_eip" "production-nat-eip-1c" {
-  vpc        = true
-  depends_on = [aws_internet_gateway.production-igw]
+  depends_on = [aws_internet_gateway.igw]
+  tags = {
+    "Name"        = "eip-${var.external_subnets[each.key]["name"]}"
+    "Environment" = var.env
+  }
 }

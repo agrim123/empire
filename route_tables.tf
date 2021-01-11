@@ -1,96 +1,48 @@
-resource "aws_route_table" "production-rt-main" {
-  vpc_id = aws_vpc.production.id
+resource "aws_route_table" "rt-main" {
+  vpc_id = aws_vpc.vpc.id
 
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.production-igw.id
+    gateway_id = aws_internet_gateway.igw.id
   }
 
   tags = {
-    "Name"        = "production-rt-main"
-    "Environment" = "production"
+    "Name"        = "${var.env}-rt-main"
+    "Environment" = var.env
   }
 }
 
 resource "aws_main_route_table_association" "production-rt-main-association" {
-  vpc_id         = aws_vpc.production.id
-  route_table_id = aws_route_table.production-rt-main.id
+  vpc_id         = aws_vpc.vpc.id
+  route_table_id = aws_route_table.rt-main.id
 }
 
-resource "aws_route_table" "production-rt-1a" {
-  vpc_id = aws_vpc.production.id
+resource "aws_route_table" "internal-subnet-rt" {
+  for_each = { for index, item in aws_nat_gateway.nat : index => item }
+
+  vpc_id = aws_vpc.vpc.id
 
   route {
     cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = aws_nat_gateway.production-nat-1a.id
+    nat_gateway_id = aws_nat_gateway.nat[each.key].id
   }
 
   tags = {
-    "Name"        = "production-rt-1a"
-    "Environment" = "production"
+    "Name"        = "${var.env}-rt-internal-${aws_subnet.internal_subnets[each.key].availability_zone}"
+    "Environment" = var.env
   }
 }
 
-resource "aws_route_table_association" "production-internal-1a-subnet-rt-association" {
-  subnet_id      = aws_subnet.production-internal-1a.id
-  route_table_id = aws_route_table.production-rt-1a.id
-  depends_on     = [aws_subnet.production-internal-1a, aws_route_table.production-rt-1a]
+resource "aws_route_table_association" "internal-subnet-rt-association" {
+  for_each = { for index, item in aws_route_table.internal-subnet-rt : index => item }
+
+  subnet_id      = aws_subnet.internal_subnets[each.key].id
+  route_table_id = aws_route_table.internal-subnet-rt[each.key].id
 }
 
-resource "aws_route_table" "production-rt-1b" {
-  vpc_id = aws_vpc.production.id
+resource "aws_route_table_association" "external-subnet-rt-association" {
+  for_each = { for index, item in aws_subnet.external_subnets : index => item }
 
-  route {
-    cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = aws_nat_gateway.production-nat-1b.id
-  }
-
-  tags = {
-    "Name"        = "production-rt-1b"
-    "Environment" = "production"
-  }
-}
-
-resource "aws_route_table_association" "production-internal-1b-subnet-rt-association" {
-  subnet_id      = aws_subnet.production-internal-1b.id
-  route_table_id = aws_route_table.production-rt-1b.id
-  depends_on     = [aws_subnet.production-internal-1b, aws_route_table.production-rt-1b]
-}
-
-resource "aws_route_table" "production-rt-1c" {
-  vpc_id = aws_vpc.production.id
-
-  route {
-    cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = aws_nat_gateway.production-nat-1c.id
-  }
-
-  tags = {
-    "Name"        = "production-rt-1c"
-    "Environment" = "production"
-  }
-}
-
-resource "aws_route_table_association" "production-internal-1c-subnet-rt-association" {
-  subnet_id      = aws_subnet.production-internal-1c.id
-  route_table_id = aws_route_table.production-rt-1c.id
-  depends_on     = [aws_subnet.production-internal-1c, aws_route_table.production-rt-1c]
-}
-
-resource "aws_route_table_association" "production-external-1a-subnet-rt-association" {
-  subnet_id      = aws_subnet.production-external-1a.id
-  route_table_id = aws_route_table.production-rt-main.id
-  depends_on     = [aws_subnet.production-external-1a, aws_route_table.production-rt-main]
-}
-
-resource "aws_route_table_association" "production-external-1b-subnet-rt-association" {
-  subnet_id      = aws_subnet.production-external-1b.id
-  route_table_id = aws_route_table.production-rt-main.id
-  depends_on     = [aws_subnet.production-external-1b, aws_route_table.production-rt-main]
-}
-
-resource "aws_route_table_association" "production-external-1c-subnet-rt-association" {
-  subnet_id      = aws_subnet.production-external-1c.id
-  route_table_id = aws_route_table.production-rt-main.id
-  depends_on     = [aws_subnet.production-external-1c, aws_route_table.production-rt-main]
+  subnet_id      = aws_subnet.external_subnets[each.key].id
+  route_table_id = aws_route_table.rt-main.id
 }

@@ -1,35 +1,16 @@
-resource "aws_subnet" "production-internal-1a" {
-  vpc_id = aws_vpc.production.id
+resource "aws_subnet" "internal_subnets" {
+  for_each = { for index, item in var.internal_subnets : index => item }
 
-  cidr_block        = "10.0.4.0/24"
-  availability_zone = "ap-southeast-1a"
+  vpc_id = aws_vpc.vpc.id
 
-  tags = {
-    "Name"        = "production-internal-1a"
-    "Environment" = "production"
-  }
-}
+  cidr_block              = var.internal_subnets[each.key]["cidr_block"]
+  availability_zone       = var.internal_subnets[each.key]["availability_zone"]
+  map_public_ip_on_launch = false
 
-resource "aws_subnet" "production-internal-1b" {
-  vpc_id = aws_vpc.production.id
-
-  cidr_block        = "10.0.5.0/24"
-  availability_zone = "ap-southeast-1b"
+  depends_on = [aws_internet_gateway.igw]
 
   tags = {
-    "Name"        = "production-internal-1b"
-    "Environment" = "production"
-  }
-}
-
-resource "aws_subnet" "production-internal-1c" {
-  vpc_id = aws_vpc.production.id
-
-  cidr_block        = "10.0.6.0/24"
-  availability_zone = "ap-southeast-1c"
-
-  tags = {
-    "Name"        = "production-internal-1c"
-    "Environment" = "production"
+    "Name"        = var.internal_subnets[each.key]["name"]
+    "Environment" = var.env
   }
 }

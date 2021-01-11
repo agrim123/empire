@@ -1,7 +1,8 @@
-resource "aws_internet_gateway" "production-igw" {
-  vpc_id = aws_vpc.production.id
+resource "aws_internet_gateway" "igw" {
+  vpc_id = aws_vpc.vpc.id
 
   tags = {
-    "Name" = "production-igw"
+    "Name" = "${var.env}-igw"
+    "Environment" = var.env
   }
 }
