@@ -25,6 +25,6 @@ resource "aws_security_group" "world-ssh" {
 
   tags = {
     "Name"        = "world-ssh"
-    "Environment" = "production"
+    "Environment" = var.env
   }
 }
