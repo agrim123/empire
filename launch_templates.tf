@@ -33,6 +33,8 @@ resource "aws_launch_template" "launch_template" {
     }
   }
 
+  user_data = filebase64("user_data/lt.sh")
+
   tags = {
     "Name"        = "${var.env}-cluster-lt"
     "Environment" = var.env
